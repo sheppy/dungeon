@@ -6,7 +6,7 @@ const SplitByPathPlugin = require("webpack-split-by-path");
 const phaserModule = path.dirname(require.resolve("phaser"));
 const phaser = path.join(phaserModule, "custom/phaser-split.js");
 const pixi = path.join(phaserModule, "custom/pixi.js");
-const p2 = path.join(phaserModule, "custom/p2.js");
+const p2 = require.resolve("p2");
 
 const PATHS = {
     app: path.join(__dirname, "src", "client"),
@@ -34,6 +34,7 @@ const config = {
         preLoaders: [],
 
         loaders: [
+            { test: /\.json/, loader: "json" },
             { test: /pixi\.js$/, loader: "expose?PIXI" },
             { test: /phaser-split\.js$/, loader: "expose?Phaser" },
             { test: /p2\.js$/, loader: "expose?p2" },
