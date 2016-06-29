@@ -42,6 +42,7 @@ export default class Level1State extends Phaser.State {
     }
 
     update() {
+        // Keyboard camera movement
         if (this.cursors.up.isDown) {
             this.camera.y -= CAMERA_MOVE_SPEED;
         }
@@ -54,6 +55,19 @@ export default class Level1State extends Phaser.State {
         }
         else if (this.cursors.right.isDown) {
             this.camera.x += CAMERA_MOVE_SPEED;
+        }
+
+        // Mouse camera movement
+        if (this.input.mousePointer.x < 5) {
+            this.camera.x -= CAMERA_MOVE_SPEED;
+        } else if (this.input.mousePointer.x > this.game.width - 5) {
+            this.camera.x += CAMERA_MOVE_SPEED;
+        }
+
+        if (this.input.mousePointer.y < 5) {
+            this.camera.y -= CAMERA_MOVE_SPEED;
+        } else if (this.input.mousePointer.y > this.game.height - 5) {
+            this.camera.y += CAMERA_MOVE_SPEED;
         }
     }
 
