@@ -9,6 +9,7 @@ const config = {
         dist: "lib",
         js: "js",
         client: "client",
+        assets: "assets",
         test: "test",
         tasks: "task",
         coverage: "coverage"

@@ -11,7 +11,7 @@ const config = require("./config");
 const webpackDevConfig = require("../webpack.config");
 
 
-gulp.task("server", ["html"], () => {
+gulp.task("server", ["html", "assets"], () => {
     let webpackDevBundler = webpack(webpackDevConfig);
 
     // Reload all devices when bundle is complete
