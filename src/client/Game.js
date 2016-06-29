@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import BootState from "./states/BootState";
 import PreloadState from "./states/PreloadState";
+import MainMenuState from "./states/MainMenuState";
 
 
 export default class Game extends Phaser.Game {
@@ -9,8 +10,7 @@ export default class Game extends Phaser.Game {
 
         this.state.add("Boot", BootState, false);
         this.state.add("Preload", PreloadState, false);
-        // this.state.add("Menu", MenuState, false);
-        // this.state.add("Game", GameState, false);
+        this.state.add("MainMenu", MainMenuState, false);
 
         this.state.start("Boot");
     }
