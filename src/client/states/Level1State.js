@@ -1,9 +1,13 @@
 import Phaser from "phaser";
 
 
+const CAMERA_MOVE_SPEED = 4;
+
 export default class Level1State extends Phaser.State {
     create() {
         this.game.stage.backgroundColor = "#070707";
+
+        this.cursors = this.input.keyboard.createCursorKeys();
 
         // Create map and set tileset
         this.map = this.add.tilemap("map-test1");
@@ -38,7 +42,19 @@ export default class Level1State extends Phaser.State {
     }
 
     update() {
+        if (this.cursors.up.isDown) {
+            this.camera.y -= CAMERA_MOVE_SPEED;
+        }
+        else if (this.cursors.down.isDown) {
+            this.camera.y += CAMERA_MOVE_SPEED;
+        }
 
+        if (this.cursors.left.isDown) {
+            this.camera.x -= CAMERA_MOVE_SPEED;
+        }
+        else if (this.cursors.right.isDown) {
+            this.camera.x += CAMERA_MOVE_SPEED;
+        }
     }
 
     render() {
