@@ -1,3 +1,4 @@
+/*eslint smells/no-complex-chaining:0 */
 "use strict";
 
 const path = require("path");
@@ -7,26 +8,27 @@ const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const stripAnsi = require("strip-ansi");
 
-const config = require("./config");
 const webpackDevConfig = require("../webpack.config");
+const config = require("./config");
 
+function onWebpackBundled(stats) {
+    // if (stats.hasErrors() || stats.hasWarnings()) {
+    if (stats.hasErrors()) {
+        return browserSync.sockets.emit("fullscreen:message", {
+            title: "Webpack Error:",
+            body: stripAnsi(stats.toString()),
+            timeout: 100000
+        });
+    }
+    browserSync.reload();
+}
 
 gulp.task("server", ["html", "assets"], () => {
     let webpackDevBundler = webpack(webpackDevConfig);
 
     // Reload all devices when bundle is complete
     // or send a fullscreen error message to the browser instead
-    webpackDevBundler.plugin("done", function(stats) {
-        // if (stats.hasErrors() || stats.hasWarnings()) {
-        if (stats.hasErrors()) {
-            return browserSync.sockets.emit("fullscreen:message", {
-                title: "Webpack Error:",
-                body: stripAnsi(stats.toString()),
-                timeout: 100000
-            });
-        }
-        browserSync.reload();
-    });
+    webpackDevBundler.plugin("done", onWebpackBundled);
 
     // Run Browsersync and use middleware for Hot Module Replacement
     browserSync.init({

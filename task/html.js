@@ -1,3 +1,4 @@
+/*eslint smells/no-complex-chaining:0 */
 const path = require("path");
 const gulp = require("gulp");
 const config = require("./config");

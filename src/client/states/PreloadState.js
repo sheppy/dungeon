@@ -19,7 +19,7 @@ export default class PreloadState extends Phaser.State {
         this.load.setPreloadSprite(this.preloadBar);
 
         this.game.load.onFileComplete.add(this.fileComplete, this);
-        this.preloadAssets()
+        this.preloadAssets();
     }
 
     fileComplete(progress, cacheKey, success, totalLoaded, totalFiles) {
@@ -27,7 +27,7 @@ export default class PreloadState extends Phaser.State {
     }
 
     create() {
-        let tween = this.add.tween(this.preloadBar).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+        let tween = this.add.tween(this.preloadBar).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
         tween.onComplete.add(this.startMainMenu, this);
     }
 
