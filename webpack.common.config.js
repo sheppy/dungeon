@@ -1,7 +1,5 @@
 const path = require("path");
 const webpack = require("webpack");
-const VendorChunkPlugin = require("webpack-vendor-chunk-plugin");
-const SplitByPathPlugin = require("webpack-split-by-path");
 
 const phaserModule = path.dirname(require.resolve("phaser"));
 const phaser = path.join(phaserModule, "custom/phaser-split.js");
@@ -15,7 +13,8 @@ const PATHS = {
 
 const config = {
     entry: {
-        index: [PATHS.app]
+        index: [PATHS.app],
+        vendor: ["pixi", "p2", "phaser"]
     },
     resolve: {
         extensions: ["", ".js"],
@@ -49,11 +48,7 @@ const config = {
     },
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(true),
-        new SplitByPathPlugin([{
-            name: "vendor",
-            path: path.join(__dirname, "node_modules")
-        }]),
-        // new VendorChunkPlugin("vendor")
+        new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js")
     ]
 };
 

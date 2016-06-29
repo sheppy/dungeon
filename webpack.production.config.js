@@ -9,11 +9,12 @@ module.exports = merge(common.config, {
     plugins: [
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
+            mangle: true,
             compress: {
                 warnings: false
             },
             output: {
-                beautify: true
+                comments: false
             }
         })
     ]
