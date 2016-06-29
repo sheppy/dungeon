@@ -16,7 +16,7 @@ export default class BootState extends Phaser.State {
     }
 
     preload() {
-        this.load.image("preloadBar", "assets/preload-bar.png");
+        this.load.image("preloadBar", "assets/images/preload-bar.png");
     }
 
     create() {

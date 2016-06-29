@@ -3,11 +3,10 @@ import Phaser from "phaser";
 
 export default class PreloadState extends Phaser.State {
     preloadAssets() {
-        // this.load.image("logo", "assets/logo.png");
-        this.load.image("main-menu-bg-bg", "assets/main-menu-bg.png");
-        // this.load.image("test", "assets/test.png");
-        // this.load.tilemap("map-test1", "assets/tilemaps/test1.json", null, Phaser.Tilemap.TILED_JSON);
-        // this.load.image("tiles-test1", "assets/tilemaps/test1.png");
+        this.load.image("main-menu-bg", "assets/images/main-menu-bg.png");
+        this.load.tilemap("map-test1", "assets/maps/test1.json", null, Phaser.Tilemap.TILED_JSON);
+        this.load.image("cave2_bilevel", "assets/tiles/cave2_bilevel.png");
+        this.load.image("collision", "assets/tiles/collision.png");
         // this.load.spritesheet("player", "assets/player.png", 24, 26);
     }
 
