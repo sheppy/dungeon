@@ -2,11 +2,7 @@ import Phaser from "phaser";
 
 
 export default class BootState extends Phaser.State {
-    preload() {
-        this.load.image("preloadBar", "assets/preload-bar.png");
-    }
-
-    create() {
+    init() {
         // Max number of fingers to detect
         this.input.maxPointers = 1;
 
@@ -17,7 +13,13 @@ export default class BootState extends Phaser.State {
 
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         // this.scale.setScreenSize(true); // Uncaught TypeError: this.game.scale.setScreenSize is not a function
+    }
 
+    preload() {
+        this.load.image("preloadBar", "assets/preload-bar.png");
+    }
+
+    create() {
         this.game.state.start("Preload", true, false);
     }
 }

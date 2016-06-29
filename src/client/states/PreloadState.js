@@ -8,6 +8,7 @@ export default class PreloadState extends Phaser.State {
         // this.load.image("test", "assets/test.png");
         // this.load.tilemap("map-test1", "assets/tilemaps/test1.json", null, Phaser.Tilemap.TILED_JSON);
         // this.load.image("tiles-test1", "assets/tilemaps/test1.png");
+        // this.load.spritesheet("player", "assets/player.png", 24, 26);
     }
 
     preload() {
@@ -17,6 +18,8 @@ export default class PreloadState extends Phaser.State {
         this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, "preloadBar");
         this.preloadBar.anchor.setTo(0.5, 0.5);
         this.load.setPreloadSprite(this.preloadBar);
+
+        this.time.advancedTiming = true;
 
         this.game.load.onFileComplete.add(this.fileComplete, this);
         this.preloadAssets();
