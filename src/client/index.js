@@ -1,4 +1,3 @@
-import Phaser from "phaser";
+import Game from "./Game";
 
-
-let game = new Phaser.Game(640, 480, Phaser.AUTO);
+new Game();

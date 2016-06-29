@@ -33,7 +33,7 @@ gulp.task("server", ["html"], () => {
         notify: false,
         ui: false,
         open: false,
-        logFileChanges: false,
+        // logFileChanges: false,
         server: {
             baseDir: config.dir.dist
         },
@@ -41,7 +41,7 @@ gulp.task("server", ["html"], () => {
             webpackDevMiddleware(webpackDevBundler, {
                 publicPath: webpackDevConfig.output.publicPath,
                 stats: { colors: true },
-                noInfo: true
+                // noInfo: true
             })
         ],
         plugins: ["bs-fullscreen-message"],
