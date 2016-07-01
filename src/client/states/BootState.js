@@ -13,6 +13,14 @@ export default class BootState extends Phaser.State {
 
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         // this.scale.setScreenSize(true); // Uncaught TypeError: this.game.scale.setScreenSize is not a function
+
+        // Track when mouse leaves canvas
+        this.input.mouse.mouseOutCallback = () => {
+            this.input.mouse.isMouseOut = true;
+        };
+        this.input.mouse.mouseOverCallback = () => {
+            this.input.mouse.isMouseOut = false;
+        };
     }
 
     preload() {

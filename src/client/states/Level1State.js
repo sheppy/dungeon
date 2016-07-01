@@ -5,7 +5,7 @@ const CAMERA_MOVE_SPEED = 4;
 
 export default class Level1State extends Phaser.State {
     create() {
-        this.game.stage.backgroundColor = "#070707";
+        this.stage.backgroundColor = "#070707";
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -58,22 +58,25 @@ export default class Level1State extends Phaser.State {
         }
 
         // Mouse camera movement
-        if (this.input.mousePointer.x < 5) {
-            this.camera.x -= CAMERA_MOVE_SPEED;
-        } else if (this.input.mousePointer.x > this.game.width - 5) {
-            this.camera.x += CAMERA_MOVE_SPEED;
-        }
+        if (!this.input.mouse.isMouseOut) {
+            if (this.input.mousePointer.x < 5) {
+                this.camera.x -= CAMERA_MOVE_SPEED;
+            } else if (this.input.mousePointer.x > this.game.width - 5) {
+                this.camera.x += CAMERA_MOVE_SPEED;
+            }
 
-        if (this.input.mousePointer.y < 5) {
-            this.camera.y -= CAMERA_MOVE_SPEED;
-        } else if (this.input.mousePointer.y > this.game.height - 5) {
-            this.camera.y += CAMERA_MOVE_SPEED;
+            if (this.input.mousePointer.y < 5) {
+                this.camera.y -= CAMERA_MOVE_SPEED;
+            } else if (this.input.mousePointer.y > this.game.height - 5) {
+                this.camera.y += CAMERA_MOVE_SPEED;
+            }
         }
     }
 
     render() {
-        // this.game.debug.key(this.testKey, 32, 32);
-        this.game.debug.inputInfo(32, 32);
+        // this.game.debug.inputInfo(32, 32);
+        // this.game.debug.cameraInfo(this.game.camera, 32, 32);
+        // this.game.debug.pointer(this.game.input.activePointer);
     }
 
 }
