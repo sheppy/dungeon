@@ -6,12 +6,10 @@ export default class BootState extends Phaser.State {
         // Max number of fingers to detect
         this.input.maxPointers = 1;
 
-        if (this.game.device.desktop) {
-            this.scale.pageAlignHorizontally = true;
-            this.scale.pageAlignVertically = true;
-        }
-
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.scale.setScreenSize = true;
+        this.scale.pageAlignHorizontally = true;
+        this.scale.pageAlignVertically = true;
 
         // Track when mouse leaves canvas
         this.input.mouse.mouseOutCallback = () => {
