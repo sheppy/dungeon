@@ -12,7 +12,6 @@ export default class BootState extends Phaser.State {
         }
 
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        // this.scale.setScreenSize(true); // Uncaught TypeError: this.game.scale.setScreenSize is not a function
 
         // Track when mouse leaves canvas
         this.input.mouse.mouseOutCallback = () => {
@@ -25,9 +24,14 @@ export default class BootState extends Phaser.State {
 
     preload() {
         this.load.image("preloadBar", "assets/images/preload-bar.png");
+        this.load.json("assets", "assets/assets.json");
     }
 
     create() {
-        this.game.state.start("Preload", true, false);
+        let assets = this.cache.getJSON("assets");
+        this.game.state.start("Loading", true, false, {
+            assets,
+            nextState: "MainMenu"
+        });
     }
 }

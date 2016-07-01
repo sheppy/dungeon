@@ -1,0 +1,18 @@
+{
+  "main-menu-bg": {
+    "type": "image",
+    "source": "assets/images/main-menu-bg.png"
+  },
+  "collision": {
+    "type": "image",
+    "source": "assets/tiles/collision.png"
+  },
+  "cave2_bilevel": {
+    "type": "image",
+    "source": "assets/tiles/cave2_bilevel.png"
+  },
+  "map-test1": {
+    "type": "tilemap",
+    "source": "assets/maps/test1.json"
+  }
+}

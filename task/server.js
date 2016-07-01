@@ -54,4 +54,5 @@ gulp.task("server", ["html", "assets"], () => {
     });
 
     gulp.watch(path.join(config.dir.src, config.dir.client, config.glob.html), ["html"]);
+    gulp.watch(path.join(config.dir.src, config.dir.client, config.dir.assets, config.glob.all), ["assets"]);
 });
