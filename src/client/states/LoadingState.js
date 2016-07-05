@@ -23,6 +23,9 @@ export default class LoadingState extends Phaser.State {
                     case "image":
                         this.load.image(key, asset.source);
                     break;
+                    case "spritesheet":
+                        this.load.spritesheet(key, asset.source, asset.frameWidth, asset.frameHeight, asset.frames, asset.margin, asset.spacing);
+                    break;
                     case "tilemap":
                         this.load.tilemap(key, asset.source, null, Phaser.Tilemap.TILED_JSON);
                     break;

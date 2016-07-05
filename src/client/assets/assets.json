@@ -14,5 +14,11 @@
   "map-test1": {
     "type": "tilemap",
     "source": "assets/maps/test1.json"
+  },
+  "male-sprite": {
+    "type": "spritesheet",
+    "source": "assets/images/male-sprite.png",
+    "frameWidth": 32,
+    "frameHeight": 32
   }
 }

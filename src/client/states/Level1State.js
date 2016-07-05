@@ -9,6 +9,17 @@ export default class Level1State extends Phaser.State {
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        this.createMap();
+
+        let player = this.add.sprite(0, 0, 'male-sprite');
+        player.animations.add('walk-down', [0, 1, 2, 1], 10, true);
+        player.animations.add('walk-left', [3, 4, 5, 4], 10, true);
+        player.animations.add('walk-right', [6, 7, 8, 7], 10, true);
+        player.animations.add('walk-up', [9, 10, 11, 10], 10, true);
+        player.animations.play('walk-down');
+    }
+
+    createMap() {
         // Create map and set tileset
         this.map = this.add.tilemap("map-test1");
         this.map.addTilesetImage(this.map.tilesets[0].name);
