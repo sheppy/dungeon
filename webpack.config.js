@@ -23,7 +23,7 @@ const devServer = {
 };
 
 module.exports = merge(common.config, {
-    devtool: "eval-source-map",
+    devtool: "cheap-module-inline-source-map",
     devServer: devServer,
     plugins: [
         new webpack.NoErrorsPlugin()

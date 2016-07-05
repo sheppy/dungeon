@@ -14,7 +14,7 @@ const PATHS = {
 const config = {
     entry: {
         index: [PATHS.app],
-        vendor: ["pixi", "p2", "phaser"]
+        vendor: ["pixi", "p2", "phaser", "easystarjs"]
     },
     resolve: {
         extensions: ["", ".js"],

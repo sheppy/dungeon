@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import PlayerPrefab from "../prefabs/PlayerPrefab";
+import PathfindingPlugin from "../plugins/PathfindingPlugin";
 
 
 const CAMERA_MOVE_SPEED = 4;
@@ -11,12 +13,16 @@ export default class Level1State extends Phaser.State {
 
         this.createMap();
 
-        let player = this.add.sprite(0, 0, 'male-sprite');
-        player.animations.add('walk-down', [0, 1, 2, 1], 10, true);
-        player.animations.add('walk-left', [3, 4, 5, 4], 10, true);
-        player.animations.add('walk-right', [6, 7, 8, 7], 10, true);
-        player.animations.add('walk-up', [9, 10, 11, 10], 10, true);
-        player.animations.play('walk-down');
+        let tileDimensions = new Phaser.Point(this.map.tileWidth, this.map.tileHeight);
+        this.pathfinding = this.game.plugins.add(PathfindingPlugin, this.map.layers[1].data, [-1], tileDimensions);
+
+        this.player = new PlayerPrefab(this, "player", { x: 176, y: 144 }, { texture: "male-sprite" });
+
+        this.input.onDown.add(this.movePlayer, this);
+    }
+
+    movePlayer() {
+        this.player.moveTo(new Phaser.Point(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY));
     }
 
     createMap() {
@@ -88,6 +94,7 @@ export default class Level1State extends Phaser.State {
         // this.game.debug.inputInfo(32, 32);
         // this.game.debug.cameraInfo(this.game.camera, 32, 32);
         // this.game.debug.pointer(this.game.input.activePointer);
+        // this.game.debug.spriteInfo(this.player, 32, 32);
     }
 
 }

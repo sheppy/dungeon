@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/sheppy/dungeon#readme",
   "dependencies": {
+    "easystarjs": "^0.3.0",
     "node-static": "^0.7.7",
     "phaser": "^2.5.0"
   },
