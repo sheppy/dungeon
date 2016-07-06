@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import dat from "exdat";
 import PlayerPrefab from "../prefabs/PlayerPrefab";
 import ViewportCameraPlugin from "../plugins/ViewportCameraPlugin";
 import PathfindingPlugin from "../plugins/PathfindingPlugin";
@@ -19,6 +20,17 @@ export default class Level1State extends Phaser.State {
             mouseEdgeMoveSpeed: 8,
             mouseEdgeRegion: 10
         });
+
+        this.setupGUI();
+    }
+
+    setupGUI() {
+        this.gui = new dat.GUI();
+
+        // var guiLevel = this.gui.addFolder('GameState');
+        // guiLevel.add(this.player, 'x', 0, this.game.width).name('x').listen();
+        // guiLevel.add(this.player, 'y', 0, this.game.height).name('y').listen();
+        // guiLevel.open();
     }
 
     createMap() {

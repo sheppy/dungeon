@@ -14,7 +14,7 @@ const PATHS = {
 const config = {
     entry: {
         index: [PATHS.app],
-        vendor: ["pixi", "p2", "phaser", "easystarjs"]
+        vendor: ["pixi", "p2", "phaser", "easystarjs", "exdat"]
     },
     resolve: {
         extensions: ["", ".js"],
@@ -37,6 +37,11 @@ const config = {
             { test: /pixi\.js$/, loader: "expose?PIXI" },
             { test: /phaser-split\.js$/, loader: "expose?Phaser" },
             { test: /p2\.js$/, loader: "expose?p2" },
+            {
+                test: /.js$/,
+                loader: "transform/cacheable?brfs",
+                include: path.dirname(require.resolve("exdat"))
+            },
             {
                 test: /.js$/,
                 include: PATHS.app,
