@@ -5,6 +5,7 @@ const phaserModule = path.dirname(require.resolve("phaser"));
 const phaser = path.join(phaserModule, "custom/phaser-split.js");
 const pixi = path.join(phaserModule, "custom/pixi.js");
 const p2 = require.resolve("p2");
+const VisibilityPolygon = require.resolve("./src/client/vendor/visibility_polygon_dev");
 
 const PATHS = {
     app: path.join(__dirname, "src", "client"),
@@ -14,14 +15,22 @@ const PATHS = {
 const config = {
     entry: {
         index: [PATHS.app],
-        vendor: ["pixi", "p2", "phaser", "easystarjs", "exdat"]
+        vendor: [
+            "pixi",
+            "p2",
+            "phaser",
+            "easystarjs",
+            "exdat",
+            "visibility-polygon"
+        ]
     },
     resolve: {
         extensions: ["", ".js"],
         alias: {
             "phaser": phaser,
             "pixi": pixi,
-            "p2": p2
+            "p2": p2,
+            "visibility-polygon": VisibilityPolygon
         }
     },
     output: {
@@ -37,6 +46,7 @@ const config = {
             { test: /pixi\.js$/, loader: "expose?PIXI" },
             { test: /phaser-split\.js$/, loader: "expose?Phaser" },
             { test: /p2\.js$/, loader: "expose?p2" },
+            { test: /visibility-polygon\.js$/, loader: "expose?VisibilityPolygon" },
             {
                 test: /.js$/,
                 loader: "transform/cacheable?brfs",
