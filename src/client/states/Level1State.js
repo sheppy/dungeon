@@ -67,4 +67,8 @@ export default class Level1State extends Phaser.State {
         this.player.moveTo(new Phaser.Point(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY));
     }
 
+    render() {
+        this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
+    }
+
 }
