@@ -4,12 +4,12 @@ import ViewportCameraPlugin from "../plugins/ViewportCameraPlugin";
 import PathfindingPlugin from "../plugins/PathfindingPlugin";
 
 
-
 export default class Level1State extends Phaser.State {
     create() {
         this.stage.backgroundColor = "#070707";
 
         this.createMap();
+        this.createPlayer();
 
         // Scroll camera with keyboard & mouse
         this.game.plugins.add(ViewportCameraPlugin, {
@@ -19,17 +19,6 @@ export default class Level1State extends Phaser.State {
             mouseEdgeMoveSpeed: 8,
             mouseEdgeRegion: 10
         });
-
-        let tileDimensions = new Phaser.Point(this.map.tileWidth, this.map.tileHeight);
-        this.pathfinding = this.game.plugins.add(PathfindingPlugin, this.map.layers[1].data, [-1], tileDimensions);
-
-        this.player = new PlayerPrefab(this, "player", { x: 176, y: 144 }, { texture: "male-sprite" });
-
-        this.input.onDown.add(this.movePlayer, this);
-    }
-
-    movePlayer() {
-        this.player.moveTo(new Phaser.Point(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY));
     }
 
     createMap() {
@@ -65,15 +54,17 @@ export default class Level1State extends Phaser.State {
         this.layers[this.map.layer.name].resizeWorld();
     }
 
-    update() {
+    createPlayer() {
+        let tileDimensions = new Phaser.Point(this.map.tileWidth, this.map.tileHeight);
+        this.pathfinding = this.game.plugins.add(PathfindingPlugin, this.map.layers[1].data, [-1], tileDimensions);
 
+        this.player = new PlayerPrefab(this, "player", { x: 176, y: 144 }, { texture: "male-sprite" });
+
+        this.input.onDown.add(this.movePlayer, this);
     }
 
-    render() {
-        // this.game.debug.inputInfo(32, 32);
-        // this.game.debug.cameraInfo(this.game.camera, 32, 32);
-        // this.game.debug.pointer(this.game.input.activePointer);
-        // this.game.debug.spriteInfo(this.player, 32, 32);
+    movePlayer() {
+        this.player.moveTo(new Phaser.Point(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY));
     }
 
 }
