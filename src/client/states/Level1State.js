@@ -1,17 +1,24 @@
 import Phaser from "phaser";
 import PlayerPrefab from "../prefabs/PlayerPrefab";
+import ViewportCameraPlugin from "../plugins/ViewportCameraPlugin";
 import PathfindingPlugin from "../plugins/PathfindingPlugin";
 
 
-const CAMERA_MOVE_SPEED = 4;
 
 export default class Level1State extends Phaser.State {
     create() {
         this.stage.backgroundColor = "#070707";
 
-        this.cursors = this.input.keyboard.createCursorKeys();
-
         this.createMap();
+
+        // Scroll camera with keyboard & mouse
+        this.game.plugins.add(ViewportCameraPlugin, {
+            keyboardMove: true,
+            keyboardMoveSpeed: 4,
+            mouseEdgeMove: true,
+            mouseEdgeMoveSpeed: 8,
+            mouseEdgeRegion: 10
+        });
 
         let tileDimensions = new Phaser.Point(this.map.tileWidth, this.map.tileHeight);
         this.pathfinding = this.game.plugins.add(PathfindingPlugin, this.map.layers[1].data, [-1], tileDimensions);
@@ -59,35 +66,7 @@ export default class Level1State extends Phaser.State {
     }
 
     update() {
-        // Keyboard camera movement
-        if (this.cursors.up.isDown) {
-            this.camera.y -= CAMERA_MOVE_SPEED;
-        }
-        else if (this.cursors.down.isDown) {
-            this.camera.y += CAMERA_MOVE_SPEED;
-        }
 
-        if (this.cursors.left.isDown) {
-            this.camera.x -= CAMERA_MOVE_SPEED;
-        }
-        else if (this.cursors.right.isDown) {
-            this.camera.x += CAMERA_MOVE_SPEED;
-        }
-
-        // Mouse camera movement
-        if (!this.input.mouse.isMouseOut) {
-            if (this.input.mousePointer.x < 5) {
-                this.camera.x -= CAMERA_MOVE_SPEED;
-            } else if (this.input.mousePointer.x > this.game.width - 5) {
-                this.camera.x += CAMERA_MOVE_SPEED;
-            }
-
-            if (this.input.mousePointer.y < 5) {
-                this.camera.y -= CAMERA_MOVE_SPEED;
-            } else if (this.input.mousePointer.y > this.game.height - 5) {
-                this.camera.y += CAMERA_MOVE_SPEED;
-            }
-        }
     }
 
     render() {
