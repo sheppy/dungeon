@@ -21,7 +21,8 @@ const config = {
             "phaser",
             "easystarjs",
             "exdat",
-            "visibility-polygon"
+            "visibility-polygon",
+            "clipper-js"
         ]
     },
     resolve: {

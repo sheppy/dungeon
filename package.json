@@ -22,10 +22,12 @@
   },
   "homepage": "https://github.com/sheppy/dungeon#readme",
   "dependencies": {
+    "clipper-js": "0.0.4",
     "easystarjs": "^0.3.0",
     "exdat": "anvaka/dat.gui",
     "node-static": "^0.7.7",
-    "phaser": "^2.5.0"
+    "phaser": "^2.5.0",
+    "vec2": "^1.4.2"
   },
   "devDependencies": {
     "babel-core": "^6.10.4",

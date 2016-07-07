@@ -19,6 +19,8 @@ export default class PlayerPrefab extends Prefab {
         this.walkingSpeed = 100;
         this.path = [];
         this.pathStep = -1;
+
+        this.onMove = new Phaser.Signal();
     }
 
     update() {
@@ -59,6 +61,7 @@ export default class PlayerPrefab extends Prefab {
                     this.animations.stop(true);
                 }
             }
+            this.onMove.dispatch(this.position.x, this.position.y);
         }
     }
 
