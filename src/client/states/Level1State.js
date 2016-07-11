@@ -1,10 +1,9 @@
 import Phaser from "phaser";
 import dat from "exdat";
-import VisibilityPolygon from "visibility-polygon";
-import Shape from "clipper-js";
 import PlayerPrefab from "../prefabs/PlayerPrefab";
 import ViewportCameraPlugin from "../plugins/ViewportCameraPlugin";
 import PathfindingPlugin from "../plugins/PathfindingPlugin";
+import LineOfSightPlugin from "../plugins/LineOfSightPlugin";
 
 
 export default class Level1State extends Phaser.State {
@@ -24,111 +23,12 @@ export default class Level1State extends Phaser.State {
 
         // this.setupGUI();
 
-        this.lightBitmap = this.game.add.bitmapData(this.game.width, this.game.height);
-        this.lightBitmap.context.fillStyle = "rgb(255, 255, 255)";
-        this.lightBitmap.context.strokeStyle = "rgb(255, 255, 255)";
-
-        // this.lightCanvas = this.game.add.graphics(0, 0);
-        this.lightCanvas = this.game.add.image(0, 0, this.lightBitmap);
-        this.lightCanvas.blendMode = Phaser.blendModes.MULTIPLY;
-        this.lightCanvas.fixedToCamera = true;
-
-        // Turn map in to polygons
-        this.polygons = this.createVisibleTilemapPolygon(this.layers.collision);
-
-        this.graphics = this.add.graphics(0, 0);
+        // Render line of sight
+        this.lineOfSight = this.game.plugins.add(LineOfSightPlugin, {
+            tileMapLayer: this.layers.collision
+        });
 
         this.createPlayer();
-    }
-
-    createVisibleTilemapPolygon(tileMapLayer) {
-        let polygons = [];
-
-        for (let r = 0, rm = tileMapLayer.layer.data.length; r < rm; r++) {
-            let row = tileMapLayer.layer.data[r];
-
-            for (let c = 0, cm = row.length; c < cm; c++) {
-                let  tile = row[c];
-
-                if (!tile.canCollide) {
-                    let x = tile.x * tile.width;
-                    let y = tile.y * tile.height;
-
-                    polygons.push(new Phaser.Polygon(
-                        x, y,
-                        x + tile.width, y,
-                        x + tile.width, y + tile.height,
-                        x, y + tile.height
-                    ));
-                }
-            }
-        }
-
-        // Join polygons
-        let shape = new Shape(polygons.map(poly => poly.points), true, true);
-        // polygons = shape.removeOverlap().mapToLower().map(points => new Phaser.Polygon(points));
-        polygons = shape.removeOverlap().mapToLower().map(points => points.map(point => [point.x, point.y]));
-
-        // Add world bounds?
-        // polygons.push([[-1, -1], [this.world.width + 1, -1], [this.world.width + 1, this.world.height + 1], [-1, this.world.height + 1]]);
-
-        // polygons.push(new Phaser.Polygon(
-        //     -1, -1,
-        //     this.world.width + 1, -1,
-        //     this.world.width + 1, this.world.height + 1,
-        //     -1, this.world.height + 1
-        // ));
-
-
-        return polygons;
-    }
-
-    updateLineOfSite(x, y) {
-        // Determine the new visibility polygon
-        var visibility = this.createLightPolygon(x, y);
-
-        // Next, fill the entire light bitmap with a dark shadow color.
-        this.lightBitmap.context.fillStyle = 'rgb(50, 50, 50)';
-        this.lightBitmap.context.fillRect(0, 0, this.game.width, this.game.height);
-
-        this.lightBitmap.context.beginPath();
-        this.lightBitmap.context.fillStyle = 'rgb(255, 255, 255)';
-        this.lightBitmap.context.moveTo(visibility[0][0] - this.camera.x, visibility[0][1] - this.camera.y);
-        for (var i = 1; i <= visibility.length; i++) {
-            this.lightBitmap.context.lineTo(visibility[i % visibility.length][0] - this.camera.x, visibility[i % visibility.length][1] - this.camera.y);
-        }
-
-        this.lightBitmap.context.closePath();
-        this.lightBitmap.context.fill();
-
-        this.lightBitmap.dirty = true;
-
-        /*
-        this.lightCanvas.clear();
-
-        this.lightCanvas.beginFill(0x444444);
-        this.lightCanvas.drawRect(0, 0, this.game.width, this.game.height);
-        this.lightCanvas.endFill();
-
-        this.lightCanvas.lineStyle(2, 0xff8800);
-        this.lightCanvas.beginFill(0xffff00);
-        this.lightCanvas.moveTo(visibility[0][0], visibility[0][1]);
-        for (var i = 1; i <= visibility.length; i++) {
-            this.lightCanvas.lineTo(visibility[i % visibility.length][0], visibility[i % visibility.length][1]);
-        }
-        this.lightCanvas.endFill();
-        */
-    }
-
-    createLightPolygon(x, y) {
-        var segments = VisibilityPolygon.convertToSegments(this.polygons);
-        segments = VisibilityPolygon.breakIntersections(segments);
-        var position = [x, y];
-        if (VisibilityPolygon.inPolygon(position, this.polygons[this.polygons.length - 1])) {
-            return VisibilityPolygon.computeViewport(position, segments, [this.camera.x, this.camera.y], [this.camera.x + this.game.width, this.camera.y + this.game.height]);
-            // return VisibilityPolygon.compute(position, segments);
-        }
-        return null;
     }
 
     setupGUI() {
@@ -181,10 +81,8 @@ export default class Level1State extends Phaser.State {
 
         this.input.onDown.add(this.movePlayer, this);
 
-        this.player.onMove.add((x, y) => {
-            this.updateLineOfSite(x, y);
-        });
-        this.updateLineOfSite(this.player.x, this.player.y);
+        this.player.onMove.add(this.lineOfSight.updateLineOfSite, this.lineOfSight);
+        this.lineOfSight.updateLineOfSite(this.player.x, this.player.y);
     }
 
     movePlayer() {
@@ -192,17 +90,6 @@ export default class Level1State extends Phaser.State {
     }
 
     render() {
-        // this.graphics.clear();
-        //
-        // this.polygons.forEach(poly => {
-        //     // let points = poly.points;
-        //     let points = poly.map(point => ({ x: point[0], y: point[1] }));
-        //     this.graphics.beginFill(0xFF33ff, 0.2);
-        //     this.graphics.lineStyle(1, 0xFF33ff, 0.5);
-        //     this.graphics.drawPolygon(points);
-        //     this.graphics.endFill();
-        // });
-
         this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
     }
 
