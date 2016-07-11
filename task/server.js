@@ -42,8 +42,10 @@ gulp.task("server", ["html", "assets"], () => {
         middleware: [
             webpackDevMiddleware(webpackDevBundler, {
                 publicPath: webpackDevConfig.output.publicPath,
-                stats: { colors: true },
-                // noInfo: true
+                watchOptions: {
+                    aggregateTimeout: 300,
+                    poll: 1000
+                }
             })
         ],
         plugins: ["bs-fullscreen-message"],

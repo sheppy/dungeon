@@ -15,13 +15,41 @@ export default class LineOfSightPlugin extends Phaser.Plugin {
     init(settings = {}) {
         Object.assign(this.settings, settings);
 
-        this.lightBitmap = this.game.add.bitmapData(this.game.width, this.game.height);
-        this.lightBitmap.context.fillStyle = "rgb(255, 255, 255)";
-        this.lightBitmap.context.strokeStyle = "rgb(255, 255, 255)";
+        // The visibility polygon
+        this.visibilityBMD = this.game.add.bitmapData(this.game.width, this.game.height);
+        this.visibilityBMD.context.fillStyle = "rgb(255, 255, 255)";
+        this.visibilityBMD.context.strokeStyle = "rgb(255, 255, 255)";
 
-        this.lightCanvas = this.game.add.image(0, 0, this.lightBitmap);
-        this.lightCanvas.blendMode = Phaser.blendModes.MULTIPLY;
-        this.lightCanvas.fixedToCamera = true;
+
+        // TODO: Use this to mask the line of sight
+        let radSize = 500;
+        this.radialBMD = this.game.add.bitmapData(radSize, radSize);
+
+        let radGrad = this.radialBMD.context.createRadialGradient(radSize / 2, radSize / 2, 10, radSize / 2, radSize / 2, radSize / 2);
+        radGrad.addColorStop(0, "transparent");
+        radGrad.addColorStop(0.05, "rgba(255, 255, 255, 0.0025)");
+        radGrad.addColorStop(0.1, "rgba(255, 255, 255, 0.01)");
+        radGrad.addColorStop(0.25, "rgba(255, 255, 255, 0.0625)");
+        radGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.25)");
+        radGrad.addColorStop(0.75, "rgba(255, 255, 255, 0.5625)");
+        radGrad.addColorStop(1, "rgba(255, 255, 255, 1)");
+
+        this.radialBMD.context.fillStyle = radGrad;
+        this.radialBMD.context.fillRect(0, 0, radSize, radSize);
+
+
+        // The shadow
+        this.shadowBMD = this.game.add.bitmapData(this.game.width, this.game.height);
+        this.shadowBMD.context.fillStyle = this.settings.shadowColor;
+        this.shadowBMD.context.fillRect(0, 0, this.game.width, this.game.height);
+
+
+        // The final image
+        this.shadowImage = this.game.add.image(0, 0, this.shadowBMD);
+        this.shadowImage.blendMode = Phaser.blendModes.MULTIPLY;
+        this.shadowImage.fixedToCamera = true;
+
+        this.mergeBMD = this.game.add.bitmapData(this.game.width, this.game.height);
 
         // Turn map in to polygons
         this.polygons = this.createVisiblePolygonFromTileMapLayer(this.settings.tileMapLayer);
@@ -73,25 +101,58 @@ export default class LineOfSightPlugin extends Phaser.Plugin {
         // Determine the new visibility polygon
         var visibility = this.createLightPolygon(x, y);
 
-        // Next, fill the entire light bitmap with a dark shadow color.
-        this.lightBitmap.context.fillStyle = this.settings.shadowColor;
-        this.lightBitmap.context.fillRect(0, 0, this.game.width, this.game.height);
+        // Clear the visibility bitmap
+        this.visibilityBMD.clear();
 
         // Draw the visibility polygon
-        this.lightBitmap.context.beginPath();
-        this.lightBitmap.context.fillStyle = 'rgb(255, 255, 255)';
-        this.lightBitmap.context.moveTo(visibility[0][0] - this.game.camera.x, visibility[0][1] - this.game.camera.y);
+        this.visibilityBMD.context.beginPath();
+        this.visibilityBMD.context.moveTo(visibility[0][0] - this.game.camera.x, visibility[0][1] - this.game.camera.y);
 
         for (let i = 1; i <= visibility.length; i++) {
             let point = visibility[i % visibility.length];
-            this.lightBitmap.context.lineTo(point[0] - this.game.camera.x, point[1] - this.game.camera.y);
+            this.visibilityBMD.context.lineTo(point[0] - this.game.camera.x, point[1] - this.game.camera.y);
         }
 
-        this.lightBitmap.context.closePath();
-        this.lightBitmap.context.fill();
+        this.visibilityBMD.context.closePath();
+        this.visibilityBMD.context.fill();
 
-        // Mark as changed for a redraw
-        this.lightBitmap.dirty = true;
+
+        // Clear the merge bitmap
+        this.mergeBMD.clear();
+
+        let radX = x - this.game.camera.x - (this.radialBMD.width / 2);
+        let radY = y - this.game.camera.y - (this.radialBMD.height / 2);
+
+        // Start with the circle
+        this.mergeBMD.copy(
+            this.radialBMD, // Source
+            0, 0,           // Source pos
+            null, null,     // Source size
+            radX, radY      // Dest pos
+        );
+
+        // Copy visibility masked by the circle
+        this.mergeBMD.copy(
+            this.visibilityBMD, // Source
+            radX, radY,         // Source pos
+            this.radialBMD.width, this.radialBMD.height,    // Source size
+            radX, radY,         // Dest pos
+            this.radialBMD.width, this.radialBMD.height,    // Dest size
+            null, null, null,   // Rotate
+            null, null,         // Scale
+            null,               // Alpha
+            "source-out"
+        );
+
+        // Make the world dark
+        this.shadowBMD.context.fillRect(0, 0, this.game.width, this.game.height);
+
+        // Copy the merged light visibility across
+        this.shadowBMD.copyRect(this.mergeBMD, {
+            x: 0, y: 0,
+            width: this.game.width,
+            height: this.game.height
+        }, 0, 0, 1, "source-over");
     }
 
     createLightPolygon(x, y) {
