@@ -30,7 +30,8 @@ export default class BootState extends Phaser.State {
         let assets = this.cache.getJSON("assets");
         this.game.state.start("Loading", true, false, {
             assets,
-            nextState: "MainMenu"
+            // nextState: "MainMenu"
+            nextState: "Level1"
         });
     }
 }
