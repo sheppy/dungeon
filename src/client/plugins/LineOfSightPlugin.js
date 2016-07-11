@@ -82,8 +82,9 @@ export default class LineOfSightPlugin extends Phaser.Plugin {
         this.lightBitmap.context.fillStyle = 'rgb(255, 255, 255)';
         this.lightBitmap.context.moveTo(visibility[0][0] - this.game.camera.x, visibility[0][1] - this.game.camera.y);
 
-        for (var i = 1; i <= visibility.length; i++) {
-            this.lightBitmap.context.lineTo(visibility[i % visibility.length][0] - this.game.camera.x, visibility[i % visibility.length][1] - this.game.camera.y);
+        for (let i = 1; i <= visibility.length; i++) {
+            let point = visibility[i % visibility.length];
+            this.lightBitmap.context.lineTo(point[0] - this.game.camera.x, point[1] - this.game.camera.y);
         }
 
         this.lightBitmap.context.closePath();
@@ -94,13 +95,16 @@ export default class LineOfSightPlugin extends Phaser.Plugin {
     }
 
     createLightPolygon(x, y) {
-        var segments = VisibilityPolygon.convertToSegments(this.polygons);
+        let segments = VisibilityPolygon.convertToSegments(this.polygons);
         segments = VisibilityPolygon.breakIntersections(segments);
-        var position = [x, y];
+
+        let position = [x, y];
+
         if (VisibilityPolygon.inPolygon(position, this.polygons[this.polygons.length - 1])) {
-            return VisibilityPolygon.computeViewport(position, segments, [this.game.camera.x, this.game.camera.y], [this.game.camera.x + this.game.width, this.game.camera.y + this.game.height]);
-            // return VisibilityPolygon.compute(position, segments);
+            // return VisibilityPolygon.computeViewport(position, segments, [this.game.camera.x, this.game.camera.y], [this.game.camera.x + this.game.width, this.game.camera.y + this.game.height]);
+            return VisibilityPolygon.compute(position, segments);
         }
+
         return null;
     }
 

@@ -18,7 +18,8 @@ export default class Level1State extends Phaser.State {
             keyboardMoveSpeed: 4,
             mouseEdgeMove: true,
             mouseEdgeMoveSpeed: 8,
-            mouseEdgeRegion: 10
+            mouseEdgeRegion: 10,
+            onCameraMove: this.updatePlayerLineOfSight.bind(this)
         });
 
         // this.setupGUI();
@@ -81,7 +82,11 @@ export default class Level1State extends Phaser.State {
 
         this.input.onDown.add(this.movePlayer, this);
 
-        this.player.onMove.add(this.lineOfSight.updateLineOfSite, this.lineOfSight);
+        this.player.onMove.add(this.updatePlayerLineOfSight, this);
+        this.updatePlayerLineOfSight()
+    }
+
+    updatePlayerLineOfSight() {
         this.lineOfSight.updateLineOfSite(this.player.x, this.player.y);
     }
 
@@ -92,5 +97,4 @@ export default class Level1State extends Phaser.State {
     render() {
         this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
     }
-
 }

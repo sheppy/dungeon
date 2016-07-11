@@ -17,7 +17,9 @@ export default class ViewportCameraPlugin extends Phaser.Plugin {
 
             mouseEdgeMove: false,
             mouseEdgeMoveSpeed: 8,
-            mouseEdgeMoveRegion: 5
+            mouseEdgeMoveRegion: 5,
+
+            onCameraMove: () => {}
         };
     }
 
@@ -33,20 +35,26 @@ export default class ViewportCameraPlugin extends Phaser.Plugin {
     }
 
     update() {
+        let cameraMoved = false;
+
         // Keyboard camera movement
         if (this.settings.keyboardMove) {
             if (this.cursors.up.isDown) {
                 this.game.camera.y -= this.settings.keyboardMoveSpeed;
+                cameraMoved = true;
             }
             else if (this.cursors.down.isDown) {
                 this.game.camera.y += this.settings.keyboardMoveSpeed;
+                cameraMoved = true;
             }
 
             if (this.cursors.left.isDown) {
                 this.game.camera.x -= this.settings.keyboardMoveSpeed;
+                cameraMoved = true;
             }
             else if (this.cursors.right.isDown) {
                 this.game.camera.x += this.settings.keyboardMoveSpeed;
+                cameraMoved = true;
             }
         }
 
@@ -55,16 +63,24 @@ export default class ViewportCameraPlugin extends Phaser.Plugin {
             if (!this.game.input.mouse.isMouseOut) {
                 if (this.game.input.mousePointer.x < this.settings.mouseEdgeMoveRegion) {
                     this.game.camera.x -= this.settings.mouseEdgeMoveSpeed;
+                    cameraMoved = true;
                 } else if (this.game.input.mousePointer.x > this.game.width - this.settings.mouseEdgeMoveRegion) {
                     this.game.camera.x += this.settings.mouseEdgeMoveSpeed;
+                    cameraMoved = true;
                 }
 
                 if (this.game.input.mousePointer.y < this.settings.mouseEdgeMoveRegion) {
                     this.game.camera.y -= this.settings.mouseEdgeMoveSpeed;
+                    cameraMoved = true;
                 } else if (this.game.input.mousePointer.y > this.game.height - this.settings.mouseEdgeMoveRegion) {
                     this.game.camera.y += this.settings.mouseEdgeMoveSpeed;
+                    cameraMoved = true;
                 }
             }
+        }
+
+        if (cameraMoved) {
+            this.settings.onCameraMove();
         }
     }
 }
